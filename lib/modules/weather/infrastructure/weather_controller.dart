@@ -8,7 +8,6 @@ import 'package:weeshr/core/component/local_storage.dart';
 import 'package:weeshr/core/exception/app_exceptions.dart';
 import 'package:weeshr/modules/weather/infrastructure/weather_service.dart';
 import 'package:weeshr/modules/weather/models/city.dart';
-import 'package:weeshr/modules/weather/models/current_session.dart';
 import 'package:weeshr/modules/weather/models/weatherModel.dart';
 import 'package:weeshr/modules/weather/presentation/components/city_data.dart';
 import 'package:weeshr/utilities/constant/exported_packages.dart';
@@ -25,12 +24,12 @@ class WeatherController extends BaseController {
   );
 
   // Variables Starts here
-  CurrentSession _session = const CurrentSession();
+  bool _canSave = false;
   int _activeCityIndex = 0;
   List<City> _filteredCities = <City>[];
   City _selectedCity = const City();
   WeatherModel _currentWeatherData = const WeatherModel();
-
+  List _constantCityData = [null, "Lagos", "Kano", "Abuja"];
   List<City> _savedCities = <City>[
     const City(),
     const City(
@@ -70,22 +69,17 @@ class WeatherController extends BaseController {
 
   int get activeCityIndex => _activeCityIndex;
 
+  City get getSelectedCity => _selectedCity;
+  List<City> get getSavedCities => _savedCities;
   bool get alreadySavedCity {
-    if (_activeCityIndex == 0) return false;
-    return _savedCities.contains(_savedCities[_activeCityIndex]);
+    if (_canSave) return false;
+    return getSavedCities.contains(getSavedCities[_activeCityIndex]);
   }
 
-  City get getSelectedCity => _selectedCity;
-
-  Future<List<City>?> get getSavedCities async {
+  loadSavedCities() async {
     var _ = await _storageService.getSecureJson(KeyString.savedCities);
-    // If not null, means, an array of cities have been saved.
-    // then, return the current default cities, concatenated with the newly saved cities.
-    // else, just return the default cities only.
-    return (_ != null)
-        // ? [..._savedCities, ...const City().fromList(_)]
-        ? [...const City().fromList(_)]
-        : _savedCities;
+    _savedCities = _ != null ? const City().fromList(_) : _savedCities;
+    notifyListeners();
   }
 
   // Getters Ends here
@@ -100,6 +94,16 @@ class WeatherController extends BaseController {
   setSelectedCity(City city) {
     _selectedCity = city;
     setAcitveCityIndex(0);
+    if (!getSavedCities.contains(city)) {
+      _canSave = true;
+    } else {
+      _canSave = false;
+    }
+    notifyListeners();
+  }
+
+  resetSavingStatus() {
+    _canSave = false;
     notifyListeners();
   }
 
@@ -118,19 +122,25 @@ class WeatherController extends BaseController {
     required bool add,
     required City city,
   }) async {
-    bool _escapeDelete = [null, "Lagos", "Kano", "Abuja"].contains(city.name);
-    print("George this is the ${city.name}");
+    bool _escapeDelete = _constantCityData.contains(city.name);
     bool _alreadyAdded = _savedCities.contains(city);
     if (_escapeDelete) {
-      // Remember to effect this...
       showError(message: "Can't delete this record.");
       return;
     }
     if (add) {
-      _alreadyAdded
-          ? showText(message: "Already Saved")
-          : _savedCities.add(city);
+      // _alreadyAdded
+      //     ? showText(message: "Already Saved")
+      //     : _savedCities.add(city);
+      if (_alreadyAdded) {
+        showText(message: "Already Saved");
+      } else {
+        _savedCities.add(city);
+        resetSavingStatus();
+      }
     } else {
+      int _prevIndex = getSavedCities.indexOf(city) - 1;
+      City _prevCity = getSavedCities[_prevIndex];
       // clearSavedCities();
       DialogAction _res = await showAlertDialog(
         context,
@@ -141,6 +151,8 @@ class WeatherController extends BaseController {
         ),
       );
       if (_res == DialogAction.yes) {
+        setAcitveCityIndex(_prevIndex);
+        setSelectedCity(_prevCity);
         _savedCities.remove(city);
         showSuccess(message: "${city.name} record deleted.");
       }

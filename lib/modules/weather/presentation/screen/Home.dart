@@ -3,7 +3,6 @@
 import 'package:drop_shadow_image/drop_shadow_image.dart';
 import 'package:weeshr/core/config/dependencies.dart';
 import 'package:weeshr/modules/weather/infrastructure/weather_controller.dart';
-import 'package:weeshr/modules/weather/models/city.dart';
 import 'package:weeshr/modules/weather/models/weatherModel.dart';
 import 'package:weeshr/modules/weather/presentation/components/city_carousel.dart';
 import 'package:weeshr/modules/weather/presentation/components/city_filter.dart';
@@ -28,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _weatherCtrl = locator.get<WeatherController>();
     _weatherData = _weatherCtrl.getCurrentWeatherData;
+    Future.microtask(() => _weatherCtrl.loadSavedCities());
     super.initState();
   }
 

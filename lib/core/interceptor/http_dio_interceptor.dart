@@ -7,15 +7,14 @@ class HttpDioInterceptors extends InterceptorsWrapper {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
+    // options.headers["content-type"] = 'application/json';
+    // options.headers["accept"] = 'application/json';
 
-    options.headers["content-type"] = 'application/json';
-    options.headers["accept"] = 'application/json';
-
-    weeshrLogger.info("REQUEST DATA ${options.baseUrl}");
-    weeshrLogger.info("REQUEST DATA ${options.uri.toString()}");
-    weeshrLogger.info("REQUEST DATA ${options.path}");
-    weeshrLogger.info("REQUEST DATA ${options.headers}");
-    weeshrLogger.info("REQUEST DATA ${options.data}");
+    // weeshrLogger.info("REQUEST DATA ${options.baseUrl}");
+    // weeshrLogger.info("REQUEST DATA ${options.uri.toString()}");
+    // weeshrLogger.info("REQUEST DATA ${options.path}");
+    // weeshrLogger.info("REQUEST DATA ${options.headers}");
+    // weeshrLogger.info("REQUEST DATA ${options.data}");
     return handler.next(options);
   }
 

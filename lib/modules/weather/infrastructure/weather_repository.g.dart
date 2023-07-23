@@ -25,7 +25,7 @@ class _WeatherRepository implements WeatherRepository {
         WeatherModel>(Options(
             method: 'POST', headers: _headers, extra: _extra)
         .compose(_dio.options,
-            'https://openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=afb65f067823e70fae845fb151e424bd',
+            'https://openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=45dd7b3d9f36128fc7356405bfd10f74',
             queryParameters: queryParameters, data: _data)
         .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = WeatherModel.fromJson(_result.data!);
