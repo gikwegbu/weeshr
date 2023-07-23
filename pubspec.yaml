@@ -1,0 +1,86 @@
+name: weeshr
+description: An assessment weather application by weeshr Team
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_spinkit: ^5.1.0
+  get_it: ^7.2.0
+  equatable: ^2.0.3
+  flutter_svg: ^1.0.3
+  provider: ^6.0.1
+  intl: ^0.17.0
+  retrofit: ^3.0.1+1
+  dio: ^4.0.0
+  enum_to_string: ^2.0.1
+  json_annotation: ^4.1.0
+  flutter_secure_storage: ^5.0.2
+  jiffy: ^5.0.0
+  flutter_dialogs: ^2.1.0
+  logging: ^1.0.1
+  flutter_rating_bar: ^4.0.0
+  bot_toast: ^4.0.1
+  hive: ^2.0.4
+  hive_flutter: ^1.1.0
+  animate_do: ^2.0.0
+  permission_handler: ^10.0.0
+  pull_to_refresh: ^2.0.0
+  material_design_icons_flutter: ^6.0.7096
+  flutter_animate: ^4.1.0
+  lottie: ^1.2.1
+  geolocator: ^8.2.0
+  geocoding: ^2.0.4
+  drop_shadow_image: ^0.9.1
+  flutter_form_builder: ^6.1.0+1
+
+
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  retrofit_generator: ^4.0.1
+  build_runner: ^2.1.2
+  json_serializable: ^6.1.5
+  flutter_native_splash: ^2.1.0
+  flutter_launcher_icons: ^0.9.2
+
+  flutter_lints: ^1.0.0
+
+flutter_native_splash:
+  image: assets/images/weeshr_icon.png
+  color: "#6b51e8"
+  android: true
+  ios: true
+
+flutter_icons:
+  android: "weeshr_icon"
+  ios: true
+  image_path: "assets/images/weeshr_icon.png"
+  adaptive_icon_background: "#000000"
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/animations/
+
+  fonts:
+    - family: SF-Pro
+      fonts:
+        - asset: assets/fonts/sfpro-bold.ttf
+          weight: 700
+        - asset: assets/fonts/sfpro-medium.ttf
+          weight: 600
+        - asset: assets/fonts/sfpro-regular.ttf
