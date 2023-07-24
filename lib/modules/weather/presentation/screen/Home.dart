@@ -27,7 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _weatherCtrl = locator.get<WeatherController>();
     _weatherData = _weatherCtrl.getCurrentWeatherData;
-    Future.microtask(() => _weatherCtrl.loadSavedCities());
+    // Future.microtask(() => _weatherCtrl.loadSavedCities());
+    Future.microtask(() {
+      _weatherCtrl.loadSavedCities();
+      _weatherCtrl.getUserWeatherData(context);
+    });
     super.initState();
   }
 
@@ -41,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               labeltext(
-                "${capitalize(Constants.appName)} 🌦️ ",
+                "${capitalize(_weatherCtrl.headerTitle)} 🌦️ ",
                 color: GREY,
               ),
               subtext(

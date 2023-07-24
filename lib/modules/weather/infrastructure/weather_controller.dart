@@ -2,6 +2,8 @@
 
 import 'dart:async';
 
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:logging/logging.dart';
 import 'package:weeshr/core/component/base_controller.dart';
 import 'package:weeshr/core/component/local_storage.dart';
@@ -31,7 +33,7 @@ class WeatherController extends BaseController {
   WeatherModel _currentWeatherData = const WeatherModel();
   List _constantCityData = [null, "Lagos", "Kano", "Abuja"];
   List<City> _savedCities = <City>[
-    const City(),
+    // const City(),
     const City(
       name: "Lagos",
       lat: 6.4550,
@@ -70,6 +72,14 @@ class WeatherController extends BaseController {
   int get activeCityIndex => _activeCityIndex;
 
   City get getSelectedCity => _selectedCity;
+  String get headerTitle {
+    if (isObjectEmpty(getSelectedCity.name)) {
+      return Constants.appName;
+    } else {
+      return getSelectedCity.name as String;
+    }
+  }
+
   List<City> get getSavedCities => _savedCities;
   bool get alreadySavedCity {
     if (_canSave) return false;
@@ -197,6 +207,36 @@ class WeatherController extends BaseController {
     } finally {
       setBusy(false);
     }
+  }
+
+  Future<void> getUserWeatherData(BuildContext context) async {
+    final hasPermission = await handleLocationPermission(context);
+
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      _getAddressFromLatLng(position);
+      fetchWeather(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(position.latitude, position.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setSelectedCity(City(
+        name: place.locality,
+        lat: position.latitude,
+        lng: position.longitude,
+      ));
+    }).catchError((e) {
+      debugPrint(e);
+    });
   }
 
   // Functions Ends here

@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names, implementation_imports, non_constant_identifier_names
 
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:bot_toast/src/toast.dart';
 import 'package:weeshr/utilities/constant/exported_packages.dart';
@@ -230,6 +231,34 @@ Future checkPermission() async {
   }
   return false;
 }
+
+Future<bool> handleLocationPermission(BuildContext context) async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            'Location services are disabled. Please enable the services')));
+    return false;
+  }
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      showText(message: "Location permissions are denied");
+      return false;
+    }
+  }
+  if (permission == LocationPermission.deniedForever) {
+    showText(message: 'Location permissions are permanently denied, we cannot request permissions.');
+    return false;
+  }
+  return true;
+}
+
+ 
 
 String enumToString<T>(T value, {camelCase = false}) =>
     EnumToString.convertToString(value, camelCase: camelCase);
