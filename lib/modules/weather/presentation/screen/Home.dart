@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _weatherCtrl = locator.get<WeatherController>();
     _weatherData = _weatherCtrl.getCurrentWeatherData;
-    // Future.microtask(() => _weatherCtrl.loadSavedCities());
     Future.microtask(() {
       _weatherCtrl.loadSavedCities();
       _weatherCtrl.getUserWeatherData(context);
